@@ -21,12 +21,46 @@ public class ArbolEstudiantes {
         return raiz == null;
     }
 
+    // B1: inserta un estudiante sin matriculas repetidas (recursivo, O(h))
     public boolean insertar(Estudiante estudiante) {
-        throw new UnsupportedOperationException("Pendiente: Fase 2 (insertar)");
+        if (estudiante == null) {
+            throw new IllegalArgumentException("El estudiante no puede ser null");
+        }
+        if (buscar(estudiante.getMatricula()) != null) {
+            return false; // matricula repetida
+        }
+        raiz = insertar(raiz, estudiante);
+        return true;
     }
 
+    private NodoEstudiante insertar(NodoEstudiante nodo, Estudiante estudiante) {
+        if (nodo == null) {
+            return new NodoEstudiante(estudiante); // caso base: lugar libre
+        }
+        if (estudiante.getMatricula() < nodo.getDato().getMatricula()) {
+            nodo.setIzquierdo(insertar(nodo.getIzquierdo(), estudiante)); // baja a la izquierda
+        } else {
+            nodo.setDerecho(insertar(nodo.getDerecho(), estudiante)); // baja a la derecha
+        }
+        return nodo;
+    }
+
+    // B2: busca por matricula (recursivo, O(h))
     public Estudiante buscar(int matricula) {
-        throw new UnsupportedOperationException("Pendiente: Fase 2 (buscar)");
+        return buscar(raiz, matricula);
+    }
+
+    private Estudiante buscar(NodoEstudiante nodo, int matricula) {
+        if (nodo == null) {
+            return null; // caso base: no existe
+        }
+        int actual = nodo.getDato().getMatricula();
+        if (matricula == actual) {
+            return nodo.getDato(); // caso base: encontrado
+        }
+        return matricula < actual
+                ? buscar(nodo.getIzquierdo(), matricula)
+                : buscar(nodo.getDerecho(), matricula);
     }
 
         // recorridos recursivos (O(n))
